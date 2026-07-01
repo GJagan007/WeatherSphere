@@ -53,34 +53,77 @@ class WeatherSphere {
         this.requestLocation();
     }
     requestLocation() {
-        if(!navigator.geolocation){
-            this.showToast("Geolocation not supported","error");
-            return;
-        }
-        navigator.geolocation.getCurrentPosition(
-            (position)=>{
-                this.user.latitude = position.coords.latitude;
-                this.user.longitude = position.coords.longitude;
-                this.coordinates.textContent =
-                    `${this.user.latitude.toFixed(5)}°, ${this.user.longitude.toFixed(5)}°`;
-                this.showToast("Location detected","success");
-                this.fetchWeather();
-            },
-            ()=>{
-                this.showToast("Location denied. Using London.","info");
-                this.user.latitude = 51.5072;
-                this.user.longitude = -0.1276;
-                this.cityName.textContent = "Search Result";
-                this.coordinates.textContent = "No Coordinates";
-                this.fetchWeather();
-            },
-            {
-                enableHighAccuracy:true,
-                timeout:30000,
-                maximumAge:0
-            }
-        );
+    if (!navigator.geolocation) {
+        this.showToast("Geolocation is not supported by this browser.", "error");
+        return;
     }
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const accuracy = position.coords.accuracy;
+            // Wait until GPS accuracy is good
+            if (accuracy > 100) {
+                this.showToast(
+                    `Waiting for better GPS accuracy... (${Math.round(accuracy)}m)`,
+                    "info"
+                );
+                setTimeout(() => {
+                    this.requestLocation();
+                }, 3000);
+                return;
+            }
+            this.user.latitude = position.coords.latitude;
+            this.user.longitude = position.coords.longitude;
+            this.coordinates.textContent =
+                `${this.user.latitude.toFixed(6)}°, ${this.user.longitude.toFixed(6)}°`;
+            this.showToast(
+                `Location detected (${Math.round(accuracy)}m accuracy)`,
+                "success"
+            );
+            this.fetchWeather();
+        },
+        (error) => {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    this.showToast(
+                        "Location permission denied. Using London.",
+                        "error"
+                    );
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    this.showToast(
+                        "Unable to determine your location. Using London.",
+                        "error"
+                    );
+                    break;
+                case error.TIMEOUT:
+                    this.showToast(
+                        "GPS timeout. Retrying...",
+                        "info"
+                    );
+                    setTimeout(() => {
+                        this.requestLocation();
+                    }, 3000);
+                    return;
+                default:
+                    this.showToast(
+                        "Unknown location error. Using London.",
+                        "error"
+                    );
+            }
+            // Fallback to London
+            this.user.latitude = 51.5072;
+            this.user.longitude = -0.1276;
+            this.cityName.textContent = "London";
+            this.coordinates.textContent = "No Coordinates";
+            this.fetchWeather();
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0
+        }
+    );
+}
     startClock(){
         const update=()=>{
             const now=new Date();
