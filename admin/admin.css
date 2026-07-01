@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Inter",sans-serif;
+}
+body{
+    background:#0b0e1a;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+.glass{
+    background:rgba(255,255,255,.06);
+    backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+    border-radius:22px;
+}
+.login-container{
+    width:420px;
+    padding:40px;
+    text-align:center;
+}
+.cloud{
+    font-size:60px;
+    color:#6C63FF;
+    margin-bottom:20px;
+}
+.login-container h1{
+    margin-bottom:10px;
+}
+.login-container p{
+    color:#aaa;
+    margin-bottom:25px;
+}
+.login-container input{
+    width:100%;
+    padding:15px;
+    margin-bottom:18px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:#ffffff10;
+    color:white;
+}
+.login-container button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#6C63FF;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+.login-container button:hover{
+    transform:translateY(-2px);
+}
+#error{
+    color:#ff6b6b;
+    margin-top:18px;
+}
+/* Dashboard */
+.dashboard{
+    width:95%;
+    max-width:1400px;
+}
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+.header h1{
+    font-size:32px;
+}
+.search{
+    padding:12px;
+    width:300px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:#ffffff10;
+    color:white;
+}
+.actions{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+.btn{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#6C63FF;
+    color:white;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:16px;
+}
+th{
+    background:#6C63FF;
+    padding:15px;
+}
+td{
+    background:#13182b;
+    padding:15px;
+    text-align:center;
+}
+tr:nth-child(even) td{
+    background:#181f36;
+}
+.delete{
+    background:#ef4444;
+}
+@media(max-width:900px){
+table{
+    display:block;
+    overflow-x:auto;
+}
+.header{
+    flex-direction:column;
+    gap:20px;
+}
+.search{
+    width:100%;
+}
+}

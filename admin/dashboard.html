@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeatherSphere Admin Dashboard</title>
+<link rel="stylesheet" href="admin.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div class="header">
+        <h1>
+            <i class="fa-solid fa-cloud"></i>
+            WeatherSphere Admin
+        </h1>
+        <input
+            class="search"
+            id="searchBox"
+            type="text"
+            placeholder="Search by name...">
+    </div>
+    <div class="actions">
+        <button class="btn" id="refreshBtn">
+            <i class="fa-solid fa-rotate"></i>
+            Refresh
+        </button>
+        <button class="btn" id="exportBtn">
+            <i class="fa-solid fa-file-csv"></i>
+            Export CSV
+        </button>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Date</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</div>
+<script src="/admin/admin.js"></script>
+</body>
+</html>

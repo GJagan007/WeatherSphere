@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherSphere</title>
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- ========================= -->
+<!-- Toast Container -->
+<!-- ========================= -->
+<div id="toast-container"></div>
+<!-- ========================= -->
+<!-- Name Modal -->
+<!-- ========================= -->
+<div id="nameModal" class="modal">
+    <div class="modal-card glass">
+        <i class="fa-solid fa-cloud cloud-icon"></i>
+        <h1>Welcome to WeatherSphere</h1>
+        <p>Please enter your name to continue.</p>
+        <input
+                type="text"
+                id="userName"
+                placeholder="Your Name"
+        >
+        <button id="continueBtn">
+            <i class="fa-solid fa-location-crosshairs"></i>
+            Allow Location Access
+        </button>
+    </div>
+</div>
+<!-- ========================= -->
+<!-- Main Container -->
+<!-- ========================= -->
+<div class="app-container">
+    <!-- ===================== -->
+    <!-- User Bar -->
+    <!-- ===================== -->
+    <header class="user-bar glass">
+        <div class="left-user">
+            <span>
+                <i class="fa-solid fa-user"></i>
+                <strong id="displayName">
+                    Welcome
+                </strong>
+            </span>
+            <span>
+                <i class="fa-solid fa-location-dot"></i>
+                <span id="cityName">
+                    Detecting...
+                </span>
+            </span>
+            <span>
+                <i class="fa-solid fa-crosshairs"></i>
+                <span id="coordinates">
+                    --
+                </span>
+            </span>
+        </div>
+        <div class="right-user">
+            <span>
+                <i class="fa-solid fa-calendar"></i>
+                <span id="currentDate"></span>
+            </span>
+            <span>
+                <i class="fa-solid fa-clock"></i>
+                <span id="currentTime"></span>
+            </span>
+        </div>
+    </header>
+    <!-- ===================== -->
+    <!-- Loading -->
+    <!-- ===================== -->
+    <section id="loadingSkeleton">
+        <div class="skeleton card"></div>
+        <div class="skeleton card"></div>
+        <div class="skeleton card"></div>
+    </section>
+    <!-- ===================== -->
+    <!-- Weather Content -->
+    <!-- ===================== -->
+    <main id="weatherContent">
+        <!-- Current Weather -->
+        <section class="weather-current glass">
+            <div>
+                <h2 id="locationTitle">
+                    Loading...
+                </h2>
+                <h1 id="temperature">
+                    --
+                </h1>
+                <h3 id="condition">
+                    --
+                </h3>
+                <p id="description">
+                    --
+                </p>
+            </div>
+            <div>
+                <i id="weatherIcon"
+                   class="fa-solid fa-cloud fa-5x"></i>
+            </div>
+        </section>
+        <!-- Weather Details -->
+        <section class="weather-details">
+            <div class="glass detail-card">
+                <h3>Feels Like</h3>
+                <p id="feelsLike">--</p>
+            </div>
+            <div class="glass detail-card">
+                <h3>Humidity</h3>
+                <p id="humidity">--</p>
+            </div>
+            <div class="glass detail-card">
+                <h3>Pressure</h3>
+                <p id="pressure">--</p>
+            </div>
+            <div class="glass detail-card">
+                <h3>UV Index</h3>
+                <p id="uv">--</p>
+            </div>
+            <div class="glass detail-card">
+                <h3>Visibility</h3>
+                <p id="visibility">--</p>
+            </div>
+            <div class="glass detail-card">
+                <h3>Sunrise</h3>
+                <p id="sunrise">--</p>
+            </div>
+            <div class="glass detail-card">
+                <h3>Sunset</h3>
+                <p id="sunset">--</p>
+            </div>
+        </section>
+        <!-- Hourly Forecast -->
+        <section class="forecast-hourly glass">
+            <h2>
+                <i class="fa-solid fa-clock"></i>
+                Next 12 Hours
+            </h2>
+            <div id="hourlyContainer">
+            </div>
+        </section>
+        <!-- Daily Forecast -->
+        <section class="forecast-daily glass">
+            <h2>
+                <i class="fa-solid fa-calendar-days"></i>
+                7 Day Forecast
+            </h2>
+            <div id="dailyContainer">
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            © 2026 WeatherSphere
+        </p>
+        <p>
+            <i class="fa-solid fa-rotate"></i>
+            Last Updated :
+            <span id="lastUpdated">
+                --
+            </span>
+        </p>
+    </footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
