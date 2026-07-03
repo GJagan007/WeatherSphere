@@ -6,8 +6,11 @@ class WeatherSphere {
             latitude: null,
             longitude: null,
             city: "",
-            country: ""
+            country: "",
+            accuracy: null
         };
+        this.locationAttempts = 0;
+        this.maxLocationAttempts = 5;
         this.init();
     }
     async init() {
@@ -62,19 +65,29 @@ class WeatherSphere {
             const accuracy = position.coords.accuracy;
             // Wait until GPS accuracy is good
             if (accuracy > 100) {
+                this.locationAttempts++;
+                if (this.locationAttempts < this.maxLocationAttempts) {
+                    this.showToast(
+                        `Improving GPS accuracy... (${this.locationAttempts}/${this.maxLocationAttempts})`,
+                        "info"
+                    );
+                    setTimeout(() => {
+                        this.requestLocation();
+                    }, 3000);
+                    return;
+                }
                 this.showToast(
-                    `Waiting for better GPS accuracy... (${Math.round(accuracy)}m)`,
+                    `Using best available location (${Math.round(accuracy)}m accuracy)`,
                     "info"
                 );
-                setTimeout(() => {
-                    this.requestLocation();
-                }, 3000);
-                return;
             }
+            this.locationAttempts = 0;
             this.user.latitude = position.coords.latitude;
             this.user.longitude = position.coords.longitude;
+            this.user.accuracy = Math.round(position.coords.accuracy);
             this.coordinates.textContent =
-                `${this.user.latitude.toFixed(6)}°, ${this.user.longitude.toFixed(6)}°`;
+            `${this.user.latitude.toFixed(6)}°, ${this.user.longitude.toFixed(6)}
+            (±${this.user.accuracy}m)`;
             this.showToast(
                 `Location detected (${Math.round(accuracy)}m accuracy)`,
                 "success"
@@ -96,14 +109,22 @@ class WeatherSphere {
                     );
                     break;
                 case error.TIMEOUT:
+                    this.locationAttempts++;
+                    if (this.locationAttempts < this.maxLocationAttempts) {
+                        this.showToast(
+                            `GPS timeout. Retrying (${this.locationAttempts}/${this.maxLocationAttempts})`,
+                            "info"
+                        );
+                        setTimeout(() => {
+                            this.requestLocation();
+                        },3000);
+                        return;
+                    }
                     this.showToast(
-                        "GPS timeout. Retrying...",
+                        "Using best available location.",
                         "info"
                     );
-                    setTimeout(() => {
-                        this.requestLocation();
-                    }, 3000);
-                    return;
+                    break;
                 default:
                     this.showToast(
                         "Unknown location error. Using London.",
@@ -171,13 +192,8 @@ class WeatherSphere {
             }
             const data = await response.json();
             this.weatherData = data;
-            // Current location
-            this.user.city =
-                data.nearest_area?.[0]?.areaName?.[0]?.value || "Unknown";
-            this.user.country =
-                data.nearest_area?.[0]?.country?.[0]?.value || "";
-            this.cityName.textContent =
-                `${this.user.city}, ${this.user.country}`;
+            // Get accurate place name using OpenStreetMap
+            await this.getExactLocation();
             // Save user to MongoDB
             await this.saveUser();
             // Update Weather UI
@@ -201,6 +217,53 @@ class WeatherSphere {
             this.showToast(error.message,"error");
         }
     }
+    async getExactLocation() {
+    try {
+        const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat=${this.user.latitude}&lon=${this.user.longitude}`,
+        {
+            headers:{
+                "Accept":"application/json"
+            }
+        });
+        const location = await response.json();
+        const address = location.address || {};
+        const place =
+            address.road ||
+            address.neighbourhood ||
+            address.suburb ||
+            address.residential ||
+            address.quarter ||
+            address.village ||
+            address.hamlet ||
+            "";
+        const city =
+            address.city ||
+            address.town ||
+            address.municipality ||
+            address.city_district ||
+            address.county ||
+            "";
+        const state = address.state || "";
+        this.user.city = place || city;
+        this.user.country = address.country || "";
+        this.cityName.textContent =
+            [place, city, state]
+            .filter(Boolean)
+            .join(", ");
+    }
+    catch (error) {
+        console.error("Reverse Geocoding Error:", error);
+        this.user.city =
+            this.weatherData?.nearest_area?.[0]?.areaName?.[0]?.value
+            || "Unknown";
+        this.user.country =
+            this.weatherData?.nearest_area?.[0]?.country?.[0]?.value
+            || "";
+        this.cityName.textContent =
+            `${this.user.city}, ${this.user.country}`;
+    }
+}
     async saveUser(){
         try{
             await fetch("/save-user",{
@@ -213,7 +276,8 @@ class WeatherSphere {
                     latitude:this.user.latitude,
                     longitude:this.user.longitude,
                     city:this.user.city,
-                    country:this.user.country
+                    country:this.user.country,
+                    accuracy:this.user.accuracy
                 })
             });
         }
